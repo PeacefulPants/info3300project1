@@ -5,16 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="main.js" type="text/javascript"></script>
+    <style>
+        .gridlines line {
+            stroke: #000000;
+        }
+
+        .gridlines .domain {
+            display: none;
+        }
+
+        .spinner circle {
+            fill: none;
+            stroke: #000000;
+            stroke-width: 1.5px;
+            stroke-dasharray: 283;
+        }
+    </style>
     </head>
 <body>
     <p>info 3300 project 1</p>
-    <svg width="500" height="500"></svg>
-    <p>
+    <p id="visuals">
         <script>
             csvFile = "vgsales_clean.csv"
             d3.csv(csvFile).then(function(data) {
-                const processed = preprocess(data);
-                console.log(processed);
+                const cleaned = preprocess(data);
+                console.log(cleaned);
+                const parentElement = d3.select("#visuals");
+                const chartBuilder = new ChartBuilder(parentElement, d3);
+                chartBuilder.createSvg(500, 400, "chart1", "svgclass");
+                const chart = chartBuilder.createChart({top: 20, bottom: 25, left: 25, right: 20}, 5);
+                chart.prepareChart(cleaned, d => d.Year, d => d.Global_Sales)
+                        .prepareXLinear()
+                        .prepareYLinear()
+                        .drawChartAxes();
+                const scatterDrawer = new ScatterDrawer(chart, d => d.Platform, d3.schemeTableau20);
+                scatterDrawer.drawCircle(1);
             });
         </script>
     </p>    
