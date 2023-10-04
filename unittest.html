@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="main.js" type="text/javascript"></script>
+    <script src="unittest.js" type="text/javascript"></script>
+    <style>
+        .dataTable {
+            border-collapse: collapse;
+            width: 100%;
+            }
+
+        .dataTable th,
+        .dataTable td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        }
+
+        .dataTable th {
+        background-color: #f2f2f2;
+        }
+
+        caption {
+            text-align: left;
+            padding: 5px;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 0 5px #ddd;
+        }
+    </style>
+    </head>
+<body>
+    <p>
+        <h1>Preprocess Unit Test</h1>
+        <div id="preprocessRawData"></div>
+        <div id="preprocessCleanData"></div>
+        <div id="preprocessTestStatus"></div>
+        <script>
+            const rawData = [
+                {
+                   misc: "some data",
+                   Global_Sales: "38.43",
+                   Year: "2006", 
+                },
+                {
+                    other: "some other data",
+                    Global_Sales: "40",
+                    Year: "2007"
+                }
+            ];
+
+            const expectedData = [
+                {
+                    misc: "some data",
+                    Global_Sales: 38.43,
+                    Year: 2006, 
+                },
+                {
+                    other: "some other data",
+                    Global_Sales: 40,
+                    Year: 2007
+                }
+            ];
+
+            const rawDataDiv = d3.select("#preprocessRawData");
+            buildTable(rawDataDiv, rawData, "dataTable", "Raw Data: ", true);
+
+            const cleanData = preprocess(rawData);
+            const cleanDataDiv = d3.select("#preprocessCleanData");
+            buildTable(cleanDataDiv, cleanData, "dataTable", "Clean Data: ", true);
+
+            const testStatusDiv = d3.select("#preprocessTestStatus");
+            testPassed(expectedData, cleanData, testStatusDiv);
+        </script>
+    </p>    
+</body>
+</html>

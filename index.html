@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="main.js" type="text/javascript"></script>
     </head>
 <body>
     <p>info 3300 project 1</p>
-
-
-    
+    <svg width="500" height="500"></svg>
+    <p>
+        <script>
+            csvFile = "vgsales_clean.csv"
+            d3.csv(csvFile).then(function(data) {
+                const processed = preprocess(data);
+                console.log(processed);
+            });
+        </script>
+    </p>    
 </body>
 </html>
