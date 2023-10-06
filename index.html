@@ -480,6 +480,7 @@
                 .style("text-anchor", "middle")
                 .text("Sales (millions of copies shipped)");
 
+                // Reference: https://d3-graph-gallery.com/graph/density2d_shading.html
                 const density = d3.contourDensity().x(function(d) {return xScale(d['Year'])}).y(function(d) {return yScale(d['Global_Sales'])}).size([width, height]).bandwidth(4)(data)
                 svg.insert('g', 'g').selectAll('path').data(density).enter().append("path").attr("d", d3.geoPath()).attr('fill', function(d) { return color_scale(d.value)})
             }
