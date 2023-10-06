@@ -533,8 +533,6 @@
                 // sort processed by year
                 processed.sort((a, b) => a.year - b.year);
 
-                console.log(processed);
-
                 // https://d3-graph-gallery.com/graph/line_several_group.html
 
                 const svgWidth = 1500;
@@ -613,8 +611,6 @@
                             .y(d => genreYScale(d.sales))(d[1].sort());
                     }
                     );
-
-                // console.log(Array.from(genreCumulative.keys()));
 
                 // add a legend
                 genrePopSvg.append("g")
