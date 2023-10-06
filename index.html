@@ -355,8 +355,7 @@
      
     </div>
     <div id="graph3">
-    <p>
-        <svg id="contour" width="500" height="600"></svg>
+
             <script>
             csvFile = "vgsales_clean.csv";
 
@@ -419,7 +418,7 @@
                 .range([margin.left, width - margin.right]);
                 let yScale = d3
                 .scaleLinear()
-                .domain([0, 2])
+                .domain([0, 5])
                 .range([height - margin.bottom, margin.top]);
 
                 // Color based on company
@@ -491,7 +490,6 @@
             drawdensityPlot(microsoftData, "Microsoft");
             });
             </script>
-        </p>
     </div>
   </body>
 </html>
