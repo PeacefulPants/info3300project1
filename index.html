@@ -347,11 +347,64 @@
             drawScatterPlot(microsoftData, "Microsoft");
             });
         </script>
+        
      </div>
-
-
+     
       
 
     </div>
+
+    <p>
+        <svg id="contour" width="500" height="600"></svg>
+            <script>
+                const contour_svg = d3.select('#contour')
+                const contour_width = contour_svg.attr('width')
+                const contour_height = contour_svg.attr('height')
+    
+                const contour_margins = {top:20, right:20, left:50, bottom:100}
+                const contour_plotwidth = contour_width - contour_margins.left - contour_margins.right
+                const contour_plotheight = contour_height - contour_margins.top - contour_margins.bottom
+                
+                let contour_annotation = contour_svg.append('g').attr('id', 'contour_annotation')
+                let contour_plotarea = contour_svg.append('g').attr("id", "contour_plotarea").attr('transform',"translate("+contour_margins.left+","+contour_margins.top+")")
+    
+                d3.csv("vgsales_clean.csv").then(function(contour_data) {
+                    console.log(contour_data)
+    
+                    contour_data.forEach( (d, i) =>{
+                        d['Global_Sales']=Number(d['Global_Sales'])
+                        d['Year']=Number(d['Year'])
+                    })
+    
+                    // Extents and scales
+                    const gs_extent = d3.extent(contour_data, d=> d['Global_Sales'])
+                    const gs_scale = d3.scaleLinear().domain(gs_extent).range([contour_plotheight,0])
+                    
+                    const year_extent = d3.extent(contour_data, d=> d['Year'])
+                    const year_scale = d3.scaleLinear().domain(year_extent).range([0,contour_plotwidth])
+    
+                    const color_scale = d3.scaleLinear().domain([0,1]).range(["white", "blue"])
+    
+                    // Axises and gridlines
+                    let contour_leftaxis = d3.axisLeft(gs_scale)
+                    let contour_leftgridlines = d3.axisLeft(gs_scale).tickSize(-contour_plotwidth-20).tickFormat("")
+                    
+                    contour_annotation.append('g').attr('class', 'y axis').attr('transform', "translate("+(contour_margins.left-20)+","+(contour_margins.top)+")").call(contour_leftaxis)
+                    contour_annotation.append('g').attr('class', 'y gridlines').attr('transform', "translate("+(contour_margins.left-20)+","+(contour_margins.top)+")").call(contour_leftgridlines)
+    
+    
+                    let contour_bottomaxis = d3.axisBottom(year_scale)
+                    let contour_bottomgridlines = d3.axisBottom(year_scale).tickSize(-contour_plotheight-20).tickFormat("")
+                    
+                    contour_annotation.append('g').attr('class', 'x axis').attr('transform', "translate("+(contour_margins.left)+","+(contour_plotheight+contour_margins.top+20)+")").call(contour_bottomaxis)
+                    contour_annotation.append('g').attr('class', 'x gridlines').attr('transform', "translate("+(contour_margins.left)+","+(contour_plotheight+contour_margins.top+20)+")").call(contour_bottomgridlines)
+    
+                    // density
+                    const density = d3.contourDensity().x(function(d) {return year_scale(d['Year'])}).y(function(d) {return gs_scale(d['Global_Sales'])}).size([contour_plotwidth, contour_plotheight]).bandwidth(5)(contour_data)
+                    contour_svg.insert('g', 'g').selectAll('path').data(density).enter().append("path").attr("d", d3.geoPath()).attr('fill', function(d) { return color_scale(d.value)})
+                })
+            </script>
+        </p>
+
   </body>
 </html>
