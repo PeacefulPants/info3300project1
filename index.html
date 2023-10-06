@@ -495,10 +495,11 @@
         </h2>
         <p>
             Using a line graph with multiple lines per genre, along with a legend, we can more easily see the
-            relative popularity of each genre over the years, as measured by millions of copies sold.
+            relative popularity of each genre over the years, as measured by millions of copies sold. Since
+            there are many genres, only the top 5 are shown, with the rest being classified as "Other".
             <br>
-            Early on in the history of video games, there is no clear dominant genre, save for occasional spikes
-            in genres such as puzzle and platform. However, as time goes on, action games become more and more
+            Early on in the history of video games, there is no clear dominant genre. However, as time goes on, action
+            games become more and more
             popular with sports being a close second.
         </p>
         <script>
@@ -518,11 +519,57 @@
                     genreToSales.set(genre, genreToSales.get(genre) + sales);
                 });
 
+                // top performing data for a given genre over all years
+                const topPerformingResults = new Map();
+
+                yearToGenre.forEach((genreToSales, year) => {
+                    genreToSales.forEach((sales, genre) => {
+                        if (!topPerformingResults.has(genre)) {
+                            topPerformingResults.set(genre, { year, sales });
+                        } else {
+                            const current = topPerformingResults.get(genre);
+                            if (sales > current.sales) {
+                                topPerformingResults.set(genre, { year, sales });
+                            }
+                        }
+                    });
+                });
+
+                // set of top performing genres based on the topPerformingResults
+                const topPerformingGenres = new Set();
+                const topN = 5;
+
+                // can do this by sorting the topPerformingResults by sales
+                // and then taking the top N
+                const sorted = Array.from(topPerformingResults.entries()).sort((a, b) => b[1].sales - a[1].sales);
+                for (let i = 0; i < topN; i++) {
+                    topPerformingGenres.add(sorted[i][0]);
+                }
+
+                // process yearToGenre again, folding the lower performers into "Other"
+                const yearToGenreFolded = new Map();
+                yearToGenre.forEach((genreToSales, year) => {
+                    genreToSales.forEach((sales, genre) => {
+                        if (!yearToGenreFolded.has(year)) {
+                            yearToGenreFolded.set(year, new Map());
+                        }
+                        const genreToSalesFolded = yearToGenreFolded.get(year);
+                        if (topPerformingGenres.has(genre)) {
+                            genreToSalesFolded.set(genre, sales);
+                        } else {
+                            if (!genreToSalesFolded.has("Other")) {
+                                genreToSalesFolded.set("Other", 0);
+                            }
+                            genreToSalesFolded.set("Other", genreToSalesFolded.get("Other") + sales);
+                        }
+                    });
+                });
+
                 // contains objects of format:
                 // {year: number, genre: string, sales: number}
                 const processed = [];
 
-                yearToGenre.forEach((genreToSales, year) => {
+                yearToGenreFolded.forEach((genreToSales, year) => {
                     // data for years after 2016 are unreliable,
                     // might need to skip
                     genreToSales.forEach((sales, genre) => {
@@ -584,18 +631,7 @@
 
                 // https://observablehq.com/@d3/color-schemes
                 const genreColors = d3.scaleOrdinal()
-                    .range(["#1f77b4",
-                        "#ff7f0e",
-                        "#2ca02c",
-                        "#d62728",
-                        "#9467bd",
-                        "#8c564b",
-                        "#e377c2",
-                        "#7f7f7f",
-                        "#bcbd22",
-                        "#17becf",
-                        "#ff00ff",
-                        "#00ffff"]);
+                    .range(d3.schemeCategory10);
 
                 genrePopSvg.selectAll(".line")
                     .data(genreCumulative)
