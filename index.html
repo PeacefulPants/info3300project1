@@ -437,9 +437,9 @@
                     }
 
                     // Reference: https://d3js.org/d3-contour; https://d3-graph-gallery.com/graph/density2d_shading.html
-                    const density = d3.contourDensity().x((d) => xScale(d['Year']) ).y((d) => yScale(d['Global_Sales']) ).size([width, height]).bandwidth(4)(data)
+                    const density = d3.contourDensity().x((d) => xScale(d['Year'])).y((d) => yScale(d['Global_Sales'])).size([width, height]).bandwidth(4)(data)
                     // Plotting
-                    svg.append('g').selectAll('path').data(density).enter().append("path").attr("d", d3.geoPath()).attr('fill', (d) => color_scale(d.value) )
+                    svg.append('g').selectAll('path').data(density).enter().append("path").attr("d", d3.geoPath()).attr('fill', (d) => color_scale(d.value))
 
                     // axis
                     svg
@@ -575,9 +575,11 @@
                 yearToGenreFolded.forEach((genreToSales, year) => {
                     // data for years after 2016 are unreliable,
                     // might need to skip
-                    genreToSales.forEach((sales, genre) => {
-                        processed.push({ year, genre, sales });
-                    });
+                    if (year <= 2016) {
+                        genreToSales.forEach((sales, genre) => {
+                            processed.push({ year, genre, sales });
+                        });
+                    }
                 });
 
                 // sort processed by year
@@ -600,8 +602,10 @@
 
                 const genreXExtent = d3.extent(processed, (d) => d.year);
                 const genreYExtent = d3.extent(processed, (d) => d.sales);
+
+                // modify genreXExtent to stop at 2016
                 const genreXScale = d3.scaleLinear()
-                    .domain(genreXExtent)
+                    .domain([genreXExtent[0], 2016])
                     .range([0, chartWidth]);
                 const genreYScale = d3.scaleLinear()
                     .domain(genreYExtent)
