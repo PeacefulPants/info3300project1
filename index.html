@@ -20,24 +20,37 @@
         stroke-width: 1.5px;
         stroke-dasharray: 283;
       }
+     /* text styling */
+     h1, h3 {
+        text-align: center;
+     }
+
+
     </style>
   </head>
   <body>
-    <p>info 3300 project 1</p>
+    <h1> Video Game sales from 1980 - 2020</h1>
+    <h3>Info 3300 project 1</h3>
     <div id="visuals">
       <script>
         csvFile = "vgsales_clean.csv";
+
         d3.csv(csvFile).then(function (data) {
+          const cleaned = preprocess(data);
+          console.log(cleaned);
           const nintendoPlatforms = [
-            "Wii",
-            "NES",
-            "GB",
-            "DS",
-            "SNES",
-            "GBA",
-            "3DS",
-            "N64",
-            "WiiU",
+          'Wii', 
+          'GB',
+          '3DS', 
+          'DS', 
+          'GameCube', 
+          'SNES', 
+          'NES', 
+          'GBA',
+          '3DS', 
+          'N64',
+          'WiiU',
+          'GC',
           ];
           const sonyPlatforms = [
             "PS3",
@@ -88,13 +101,13 @@
             let color;
             switch (companyId) {
               case "Nintendo":
-                color = "#FFD1DC";
+                color = "#FFC8D0";
                 break;
               case "Sony":
-                color = "#B2D8D8";
+                color = "#B2D8E0";
                 break;
               case "Microsoft":
-                color = "#D8BFD8";
+                color = "#98FB98";
                 break;
             }
 
@@ -155,6 +168,165 @@
           drawScatterPlot(microsoftData, "Microsoft");
         });
       </script>
+
+      <br>
+
+
+
+
+
+      <div id="barChart">
+        <h2>Sales by Year for All Consoles</h2>
+        <p>This bar graph visualization offers a numerial analysis of the number of sales by each console </p>
+        <script>
+            const margin = { top: 20, right: 20, bottom: 70, left: 40 },
+                width = 1500 - margin.left - margin.right,
+                height = 450 - margin.top - margin.bottom;
+
+            const x = d3.scaleBand().rangeRound([0, width], .05).padding(0.4),
+                y = d3.scaleLinear().range([height, 0]);
+
+            const xAxis = d3.axisBottom(x),
+                yAxis = d3.axisLeft(y).ticks(10);
+
+            const svg = d3.select("#barChart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Define platforms
+            const nintendoPlatforms = [
+                'Wii', 'GB', '3DS', 'DS', 'GameCube', 'SNES', 'NES', 'GBA', '3DS', 'N64', 'WiiU', 'GC'
+            ];
+            const sonyPlatforms = ["PS3", "PS2", "PS4", "PS", "PSP", "PSV", "PSX"];
+            const microsoftPlatforms = ["X360", "XB", "XOne"];
+
+            // Load data
+            d3.csv("vgsales_clean.csv").then(data => {
+                let salesData = {};
+
+                data.forEach(d => {
+                    d.Year = +d.Year;
+                    d.Global_Sales = +d.Global_Sales;
+
+                    if (!salesData[d.Year]) {
+                        salesData[d.Year] = {Nintendo: 0, Sony: 0, Microsoft: 0};
+                    }
+
+                    if (nintendoPlatforms.includes(d.Platform)) {
+                        salesData[d.Year].Nintendo += d.Global_Sales;
+                    } else if (sonyPlatforms.includes(d.Platform)) {
+                        salesData[d.Year].Sony += d.Global_Sales;
+                    } else if (microsoftPlatforms.includes(d.Platform)) {
+                        salesData[d.Year].Microsoft += d.Global_Sales;
+                    }
+                });
+
+                let aggregatedData = [];
+                for (let year in salesData) {
+                    aggregatedData.push({
+                        Year: year,
+                        Nintendo: salesData[year].Nintendo,
+                        Sony: salesData[year].Sony,
+                        Microsoft: salesData[year].Microsoft
+                    });
+                }
+
+                x.domain(aggregatedData.map(d => d.Year));
+                y.domain([0, 350]);
+
+                const colors = {
+                    Nintendo: 'salmon',      
+                    Sony: 'lightblue',      
+                    Microsoft: 'lightgreen' 
+                };
+
+                ['Nintendo', 'Sony', 'Microsoft'].forEach((company, idx) => {
+                    svg.selectAll(`.bar-${company}`)
+                        .data(aggregatedData)
+                        .enter().append("rect")
+                        .attr("class", `bar-${company}`)
+                        .style("fill", colors[company])
+                        .attr("x", d => x(d.Year) + x.bandwidth() / 3 * idx)
+                        .attr("width", x.bandwidth() / 3)
+                        .attr("y", d => y(d[company]))
+                        .attr("height", d => height - y(d[company]));
+                });
+
+                // Axes
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis)
+                    .selectAll("text")
+                    .style("text-anchor", "middle")
+                    .attr("dy", ".55em");
+
+                svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis)
+                    .append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .text("Global Sales");
+
+
+                //labels
+                svg.append("text")             
+                    .attr("transform", "translate(" + (width/2) + " ," + (height + margin.bottom - 10) + ")")
+                    .style("text-anchor", "middle")
+                    .text("Year");
+                
+                svg.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", -6 - margin.left)
+                    .attr("x", 0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Sales");
+
+                //legend
+                const legendEntries = [
+                    { label: 'Nintendo', color: 'salmon' },
+                    { label: 'Sony', color: 'lightblue' },
+                    { label: 'Microsoft', color: 'lightgreen' }
+                    ];
+
+                const legend = svg.selectAll(".legend")
+                    .data(legendEntries)
+                    .enter()
+                    .append("g")
+                    .attr("class", "legend")
+                    .attr("transform", function(d, i) {
+                        return "translate(0," + i * 20 + ")";
+                    });
+
+                // draw legend colored rectangles
+                legend.append("rect")
+                    .attr("x", width - 18)
+                    .attr("width", 18)
+                    .attr("height", 18)
+                    .style("fill", d => d.color);
+
+                // draw legend text
+                legend.append("text")
+                    .attr("x", width - 24)
+                    .attr("y", 9)
+                    .attr("dy", ".35em")
+                    .style("text-anchor", "end")
+                    .text(d => d.label);
+
+
+
+
+            });
+        </script>
+      </div>
+
     </div>
   </body>
 </html>
