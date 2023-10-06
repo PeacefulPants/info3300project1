@@ -43,7 +43,7 @@
     <div id="visuals">
         <div id="barChart">
             <h2>Graph 1: Sales by Year for the three most popular console companies</h2>
-            <p>This bar graph visualization offers a numerial analysis of the number of sales from the three major video game
+            <p>This bar graph visualization offers a numerial analysis of the number of sales (millions of copies sold) from the three major video game
             companies: Nintendo, Sony, and Mircosoft by each year.</p>
             <script>
                 const margin = { top: 20, right: 20, bottom: 70, left: 40 },
@@ -209,7 +209,7 @@
       <br>   
       <div id = "scatterplot">
         <h2>Graph 2: Break down visualization of Sales by Year for each console company</h2>
-        <p>These scatterplot visualizations offer an in depth understanding of the number of sales from each video game
+        <p>These scatterplot visualizations offer an in depth understanding of the number of sales (millions of copies sold) from each video game
         companies: Nintendo, Sony, and Mircosoft by each year.
         <br>
         The second rows are a series of 2D density plots that show how concentrated most games of the three companies are in their global sales.
@@ -300,7 +300,8 @@
                 .attr("cx", (d) => xScale(+d.Year))
                 .attr("cy", (d) => yScale(d.Global_Sales))
                 .attr("r", (d) => 3)
-                .style("fill", color);
+                .style("fill", color)
+                .attr("opacity", "0.6");
 
                 // axis
                 svg
