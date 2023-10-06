@@ -46,7 +46,7 @@
             <p>This bar graph visualization offers a numerial analysis of the number of sales (in millions of copies shipped) from the three major video game
             companies: Nintendo, Sony, and Mircosoft by each year.</p>
             <script>
-                const margin = { top: 20, right: 20, bottom: 70, left: 40 },
+                const margin = { top: 20, right: 20, bottom: 70, left: 48 },
                     width = 1500 - margin.left - margin.right,
                     height = 450 - margin.top - margin.bottom;
     
@@ -150,11 +150,11 @@
                     
                     svg.append("text")
                         .attr("transform", "rotate(-90)")
-                        .attr("y", -6 - margin.left)
+                        .attr("y", -3 - margin.left)
                         .attr("x", 0 - (height / 2))
                         .attr("dy", "1em")
                         .style("text-anchor", "middle")
-                        .text("Sales");
+                        .text("Sales (millions of copies shipped)");
     
                     //legend
                     const legendEntries = [
@@ -343,7 +343,7 @@
                     `translate(${margin.left / 2}, ${height / 2}) rotate(-90)`
                 )
                 .style("text-anchor", "middle")
-                .text("Sales");
+                .text("Sales (millions of copies shipped)");
             }
 
             drawScatterPlot(nintendoData, "Nintendo");
@@ -480,7 +480,7 @@
                     `translate(${margin.left / 2}, ${height / 2}) rotate(-90)`
                 )
                 .style("text-anchor", "middle")
-                .text("Sales");
+                .text("Sales (millions of copies shipped)");
 
                 const density = d3.contourDensity().x(function(d) {return xScale(d['Year'])}).y(function(d) {return yScale(d['Global_Sales'])}).size([width, height]).bandwidth(4)(data)
                 svg.insert('g', 'g').selectAll('path').data(density).enter().append("path").attr("d", d3.geoPath()).attr('fill', function(d) { return color_scale(d.value)})
