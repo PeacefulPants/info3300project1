@@ -46,6 +46,13 @@
             <p>This bar graph visualization offers a numerial analysis of the number of sales (in millions of copies shipped) from the three major video game
             companies: Nintendo, Sony, and Mircosoft by each year.</p>
             <script>
+                // adjust colors here to change colors for all charts
+                const colors = {
+                    Nintendo: '#DD2020',      
+                    Sony: '#0112FE',      
+                    Microsoft: '#7CBB00' 
+                };
+
                 const margin = { top: 20, right: 20, bottom: 70, left: 48 },
                     width = 1500 - margin.left - margin.right,
                     height = 450 - margin.top - margin.bottom;
@@ -104,12 +111,6 @@
                     x.domain(aggregatedData.map(d => d.Year));
                     y.domain([0, 350]);
     
-                    const colors = {
-                        Nintendo: 'salmon',      
-                        Sony: 'lightblue',      
-                        Microsoft: 'lightgreen' 
-                    };
-    
                     ['Nintendo', 'Sony', 'Microsoft'].forEach((company, idx) => {
                         svg.selectAll(`.bar-${company}`)
                             .data(aggregatedData)
@@ -158,9 +159,9 @@
     
                     //legend
                     const legendEntries = [
-                        { label: 'Nintendo', color: 'salmon' },
-                        { label: 'Sony', color: 'lightblue' },
-                        { label: 'Microsoft', color: 'lightgreen' }
+                        { label: 'Nintendo', color: colors.Nintendo },
+                        { label: 'Sony', color: colors.Sony },
+                        { label: 'Microsoft', color: colors.Microsoft }
                         ];
     
                     const legend = svg.selectAll(".legend")
@@ -219,7 +220,6 @@
 
             d3.csv(csvFile).then(function (data) {
             const cleaned = preprocess(data);
-            console.log(cleaned);
             const nintendoPlatforms = [
             'Wii', 
             'GB',
@@ -283,13 +283,13 @@
                 let color;
                 switch (companyId) {
                 case "Nintendo":
-                    color = "#ff0026";
+                    color = colors.Nintendo;
                     break;
                 case "Sony":
-                    color = "#00BBE0";
+                    color = colors.Sony;
                     break;
                 case "Microsoft":
-                    color = "#00FA00";
+                    color = colors.Microsoft;
                     break;
                 }
 
@@ -345,7 +345,6 @@
                 .style("text-anchor", "middle")
                 .text("Sales (millions of copies shipped)");
             }
-
             drawScatterPlot(nintendoData, "Nintendo");
             drawScatterPlot(sonyData, "Sony");
             drawScatterPlot(microsoftData, "Microsoft");
@@ -362,7 +361,6 @@
 
             d3.csv(csvFile).then(function (data) {
             const cleaned = preprocess(data);
-            console.log(cleaned);
             const nintendoPlatforms = [
             'Wii', 
             'GB',
@@ -427,16 +425,16 @@
                 let color_scale;
                 switch (companyId) {
                 case "Nintendo":
-                    color = "#FFC8D0";
-                    color_scale = d3.scaleLinear().domain([0,1]).range(["white", "#ff0026"])
+                    color = colors.Nintendo;
+                    color_scale = d3.scaleLinear().domain([0,1]).range(["white", colors.Nintendo])
                     break;
                 case "Sony":
-                    color = "#00BBE0";
-                    color_scale = d3.scaleLinear().domain([0,1]).range(["white", "#00BBE0"])
+                    color = colors.Sony;
+                    color_scale = d3.scaleLinear().domain([0,1]).range(["white", colors.Sony])
                     break;
                 case "Microsoft":
-                    color = "#00FA00";
-                    color_scale = d3.scaleLinear().domain([0,1]).range(["white", "#00FA00"])
+                    color = colors.Microsoft;
+                    color_scale = d3.scaleLinear().domain([0,1]).range(["white", colors.Microsoft])
                     break;
                 }
 
