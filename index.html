@@ -283,13 +283,13 @@
                 let color;
                 switch (companyId) {
                 case "Nintendo":
-                    color = "#FFC8D0";
+                    color = "#ff0026";
                     break;
                 case "Sony":
-                    color = "#B2D8E0";
+                    color = "#00BBE0";
                     break;
                 case "Microsoft":
-                    color = "#98FB98";
+                    color = "#00FA00";
                     break;
                 }
 
@@ -300,7 +300,8 @@
                 .attr("cx", (d) => xScale(+d.Year))
                 .attr("cy", (d) => yScale(d.Global_Sales))
                 .attr("r", (d) => 3)
-                .style("fill", color);
+                .style("fill", color)
+                .attr("opacity", "0.3");
 
                 // axis
                 svg
