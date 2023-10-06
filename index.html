@@ -537,7 +537,8 @@
 
                 const svgWidth = 1500;
                 const svgHeight = 450;
-                const chartWidth = svgWidth - margin.left - margin.right;
+                const leftAxisPadding = 10;
+                const chartWidth = svgWidth - margin.left - margin.right - leftAxisPadding;
                 const chartHeight = svgHeight - margin.top - margin.bottom;
                 const gridlinePadding = 10;
 
@@ -570,12 +571,12 @@
 
                 genrePopSvg.append("g")
                     .attr("class", "y axis")
-                    .attr("transform", `translate(${margin.left - gridlinePadding}, ${margin.top})`)
+                    .attr("transform", `translate(${margin.left - gridlinePadding + leftAxisPadding}, ${margin.top})`)
                     .call(genreYAxis);
 
                 genrePopSvg.append("g")
                     .attr("class", "grid")
-                    .attr("transform", `translate(${margin.left - gridlinePadding}, ${margin.top})`)
+                    .attr("transform", `translate(${margin.left - gridlinePadding + leftAxisPadding}, ${margin.top})`)
                     .call(genreYGridlines);
 
 
@@ -615,7 +616,7 @@
                 // add a legend
                 genrePopSvg.append("g")
                     .attr("class", "legend")
-                    .attr("transform", `translate(${margin.left}, ${margin.top + gridlinePadding})`)
+                    .attr("transform", `translate(${margin.left + leftAxisPadding}, ${margin.top + gridlinePadding})`)
                     .selectAll("rect")
                     .data(Array.from(genreCumulative.keys()))
                     .enter()
@@ -637,6 +638,20 @@
                     .attr("text-anchor", "start")
                     .attr("alignment-baseline", "middle")
                     .text(d => d);
+
+                // now add axes labels
+                genrePopSvg.append("text")
+                    .attr("x", svgWidth / 2)
+                    .attr("y", svgHeight - margin.bottom / 2 + gridlinePadding)
+                    .attr("text-anchor", "middle")
+                    .attr("alignment-baseline", "middle")
+                    .text("Year");
+
+                genrePopSvg.append("text")
+                    .attr("transform", `translate(${margin.left / 2 - gridlinePadding}, ${svgHeight / 2}) rotate(-90)`)
+                    .attr("text-anchor", "middle")
+                    .attr("alignment-baseline", "middle")
+                    .text("Sales (millions of copies shipped)");
             });
         </script>
     </div>
