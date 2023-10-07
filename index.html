@@ -352,37 +352,12 @@
         </div>
 
     </div>
-    <div id="graph3">
+    <div id="density plot">
 
         <script>
-            csvFile = "vgsales_clean.csv";
 
             d3.csv(csvFile).then(function (data) {
                 const cleaned = preprocess(data);
-                const nintendoPlatforms = [
-                    'Wii',
-                    'GB',
-                    '3DS',
-                    'DS',
-                    'GameCube',
-                    'SNES',
-                    'NES',
-                    'GBA',
-                    '3DS',
-                    'N64',
-                    'WiiU',
-                    'GC',
-                ];
-                const sonyPlatforms = [
-                    "PS3",
-                    "PS2",
-                    "PS4",
-                    "PS",
-                    "PSP",
-                    "PSV",
-                    "PSX",
-                ];
-                const microsoftPlatforms = ["X360", "XB", "XOne"];
 
                 // filter data based on platforms
                 const nintendoData = data.filter((d) =>
@@ -395,7 +370,6 @@
                     microsoftPlatforms.includes(d.Platform)
                 );
 
-                // create a function to draw scatterplot
                 function drawdensityPlot(data, companyId) {
                     const width = 500;
                     const height = 400;
@@ -418,7 +392,6 @@
                         .domain([0, 2])
                         .range([height - margin.bottom, margin.top]);
 
-                    // Color based on company
                     let color;
                     let color_scale;
                     switch (companyId) {
